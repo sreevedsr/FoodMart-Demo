@@ -110,6 +110,35 @@
     <script src="{{ asset('assets/js/plugins.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script>document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function(e){
+        e.preventDefault();
+
+        const productId = this.dataset.product;
+        const quantityInput = this.closest('.product-item').querySelector('#quantity');
+        const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+
+        fetch("{{ route('cart.add') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: quantity
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                // Update cart icon dynamically
+                const cartIcon = document.querySelector('#cart-count');
+                if(cartIcon) cartIcon.textContent = data.totalItems;
+            }
+        });
+    });
+});</script>
 </body>
 
 </html>

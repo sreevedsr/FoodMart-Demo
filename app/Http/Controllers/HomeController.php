@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Product;
+
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        // Fetch categories with at least one product
-        $categories = Category::has('products')->get();
 
-        return view('home', compact('categories'));
-    }
+public function index()
+{
+    $categories = Category::has('products')->get();
+    $products = Product::all(); // ← define products
+    return view('home', compact('categories', 'products'));
+}
 }
 

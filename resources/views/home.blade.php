@@ -14,39 +14,40 @@
 
               <div class="swiper main-swiper">
                 <div class="swiper-wrapper">
-
                   <div class="swiper-slide">
-                    <div class="row banner-content p-5">
-                      <div class="content-wrapper col-md-7">
+                    <div class="row banner-content p-5 align-items-center">
+                      <div class="content-wrapper col-12 col-md-7 mb-4 mb-md-0 text-center text-md-start">
                         <div class="categories mb-3 pb-3">100% natural</div>
                         <h3 class="banner-title">Fresh Smoothie & Summer Juice</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissim massa diam elementum.</p>
-                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 mt-2">Shop
+                          Collection</a>
                       </div>
-                      <div class="img-wrapper col-md-5">
-                        <img src="{{ asset('assets/images/product-thumb-1.png')  }}" class="img-fluid">
+                      <div class="img-wrapper col-12 col-md-5 text-center">
+                        <img src="{{ asset('assets/images/product-thumb-1.png') }}" class="img-fluid banner-img">
                       </div>
                     </div>
                   </div>
 
                   <div class="swiper-slide">
-                    <div class="row banner-content p-5">
-                      <div class="content-wrapper col-md-7">
+                    <div class="row banner-content p-5 align-items-center">
+                      <div class="content-wrapper col-12 col-md-7 mb-4 mb-md-0 text-center text-md-start">
                         <div class="categories mb-3 pb-3">100% natural</div>
                         <h3 class="banner-title">Heinz Tomato Ketchup</h3>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissim massa diam elementum.</p>
-                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                        <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 mt-2">Shop
+                          Collection</a>
                       </div>
-                      <div class="img-wrapper col-md-5">
-                        <img src="{{ asset('assets/images/product-thumb-2.png')  }}" class="img-fluid">
+                      <div class="img-wrapper col-12 col-md-5 text-center">
+                        <img src="{{ asset('assets/images/product-thumb-2.png') }}" class="img-fluid banner-img">
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="swiper-pagination"></div>
 
               </div>
+              <div class="swiper-pagination"></div>
             </div>
 
             <div class="banner-ad bg-success-subtle block-2"
@@ -92,7 +93,7 @@
       <div class="row">
         <div class="col-md-12">
 
-          <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+          <div class="section-header d-flex flex-wrap justify-content-between mb-3">
             <h2 class="section-title">Category</h2>
 
             <div class="d-flex align-items-center">
@@ -319,7 +320,10 @@
                             </button>
                           </span>
                         </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
+                        <a href="{{ route('cart.show', $product->id) }}" class="nav-link btn btn-primary">
+                          Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon>
+                        </a>
+
                       </div>
                     </div>
                   </div>

@@ -6,6 +6,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -17,23 +24,41 @@ Route::middleware('guest')->group(function () {
     Route::post('/signup', [AuthController::class, 'signup']);
 
     Route::get('/category/{id}/products', [ProductController::class, 'productsByCategory'])->name('category.products');
-
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+/*
+|--------------------------------------------------------------------------
+| Authenticated User Routes
+|--------------------------------------------------------------------------
+*/
 
-// Protected dashboard (still available if you want a profile page)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Admin login routes
+    // Cart routes
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');          // Add product to cart
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');        // View cart
+    Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
+
+    // User dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+
+// Admin login
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login']);
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
-// Admin dashboard (protected)
-Route::middleware('auth:admin')->prefix('admin')->group(function() {
+// Protected admin dashboard and resources
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Product management
