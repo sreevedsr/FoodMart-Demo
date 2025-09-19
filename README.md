@@ -1,137 +1,150 @@
-FoodMart
+# FoodMart
 
-A modern ecommerce web application built with Laravel. FoodMart provides a platform for users to browse products, manage their cart, and complete purchases, while offering admins tools to manage categories, products, and users.
+FoodMart is a Laravel-based ecommerce web application built as a learning project. It demonstrates core Laravel concepts like authentication, routing, controllers, migrations, and CRUD operations while simulating an online store. The project includes product management, category organization, shopping cart functionality, and an admin dashboard.
 
-Features
+---
 
-User Authentication – Secure login & signup system.
+## Table of Contents
 
-Product Management – Create, update, delete, and list products.
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [User Roles](#user-roles)
+- [Screenshots](#screenshots)
+- [Project Structure](#project-structure)
+- [Development Notes](#development-notes)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
 
-Category Management – Organize products into categories.
+---
 
-Shopping Cart – Add, update, and remove products from the cart.
+## Features
 
-Checkout Flow – Basic checkout process for order simulation.
+- User Authentication (login & signup)
+- Product Management (CRUD)
+- Category Management
+- Shopping Cart with add/update/remove items
+- Checkout simulation
+- Admin Dashboard for management
+- Responsive UI
 
-Admin Dashboard – Manage categories, products, and users.
+---
 
-Responsive UI – Clean and simple layout for desktop and mobile.
+## Tech Stack
 
-Tech Stack
+- **Framework:** Laravel 10 (PHP 8+)
+- **Frontend:** Blade, HTML5, CSS3, JavaScript
+- **Database:** MySQL
+- **Authentication:** Laravel Breeze / Auth scaffolding
+- **Version Control:** Git & GitHub
 
-Backend: Laravel 10 (PHP 8+)
+---
 
-Frontend: Blade templates, HTML5, CSS3, JavaScript
+## Getting Started
 
-Database: MySQL
-
-Authentication: Laravel Breeze / Auth scaffolding
-
-Version Control: Git & GitHub
-
-Getting Started
-1. Clone the Repository
+```bash
+# 1. Clone the Repository
 git clone https://github.com/yourusername/FoodMart.git
 cd FoodMart
 
-2. Install Dependencies
+# 2. Install Dependencies
 composer install
 npm install && npm run dev
 
-3. Configure Environment
+# 3. Configure Environment
+cp .env.example .env   # update DB credentials
 
-Copy .env.example to .env and update database credentials:
-
-cp .env.example .env
-
-4. Generate App Key
+# 4. Generate App Key
 php artisan key:generate
 
-5. Run Migrations & Seeders
+# 5. Run Migrations & Seeders
 php artisan migrate --seed
 
-6. Start Development Server
+# 6. Start the Development Server
 php artisan serve
+```
 
+Visit the app at: `http://127.0.0.1:8000`
 
-The application will be available at:
-http://127.0.0.1:8000
+---
 
-User Roles
+## User Roles
 
-Guest – Can browse products & categories.
+- **Guest:** Browse products & categories
+- **User:** Register, login, manage cart, checkout
+- **Admin:** Manage categories, products, and view dashboard
 
-User – Can register, login, manage cart, and checkout.
+---
 
-Admin – Can manage categories, products, and view dashboard.
+## Screenshots
 
-Screenshots
-Home Page
+> Place screenshots in `docs/screenshots/` folder and update the paths below.
 
-Product Listing
+**Home Page**  
+![Home Page](docs/screenshots/home.png)
 
-Shopping Cart
+**Product Listing**  
+![Products](docs/screenshots/products.png)
 
-Admin Dashboard
+**Shopping Cart**  
+![Cart](docs/screenshots/cart.png)
 
-(Add actual screenshots inside docs/screenshots/ folder in the project.)
+**Admin Dashboard**  
+![Admin Dashboard](docs/screenshots/admin.png)
 
-Project Structure
+---
+
+## Project Structure
+
+```
 FoodMart/
-│── app/                # Laravel application files
+│── app/                # Application files
 │── bootstrap/          # Bootstrap files
 │── config/             # Configuration files
-│── database/           # Migrations and seeders
+│── database/           # Migrations & seeders
 │── public/             # Public assets
 │── resources/          # Blade templates, CSS, JS
 │── routes/             # Web & API routes
-│── storage/            # Storage (logs, cache, etc.)
-│── tests/              # PHPUnit tests
+│── storage/            # Logs, cache, etc.
+│── tests/              # Unit & feature tests
 │── .env.example        # Environment variables template
 │── composer.json       # Composer dependencies
 │── package.json        # NPM dependencies
+```
 
-Development Notes
+---
 
-Built as part of learning Laravel fundamentals.
+## Development Notes
 
-Implements authentication, CRUD operations, and MVC design pattern.
+- Created as a practical project to learn Laravel.
+- Covers authentication, CRUD, routing, MVC pattern.
+- Serves as a foundation for building scalable ecommerce apps.
 
-Can be extended with additional ecommerce features.
+---
 
-Future Enhancements
+## Future Enhancements
 
-Planned improvements and features to extend the project:
+- Payment Gateway Integration (Stripe, PayPal)
+- Product Search with filters
+- Wishlist functionality
+- Order History tracking
+- Product Reviews & Ratings
+- Inventory Management
+- Email Notifications
+- REST API for mobile apps or third-party use
 
-Payment Integration – Add Stripe/PayPal for real transactions.
+---
 
-Search & Filters – Product search with category and price filters.
+## Contributing
 
-Wishlist – Allow users to save products for later.
+1. Fork the repository
+2. Create a new branch (`feature/your-feature`)
+3. Commit changes
+4. Open a Pull Request
 
-Order History – Track past purchases and invoices.
+---
 
-Product Reviews & Ratings – Enable users to leave feedback.
+## License
 
-Inventory Management – Track product stock levels.
-
-Email Notifications – Send order confirmation and updates.
-
-REST API – Expose APIs for mobile or third-party integration.
-
-Contributing
-
-Contributions are welcome.
-
-Fork the repository
-
-Create a new branch (feature/your-feature)
-
-Commit changes
-
-Open a Pull Request
-
-License
-
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**.
