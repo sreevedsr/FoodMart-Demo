@@ -24,6 +24,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/signup', [AuthController::class, 'signup']);
 
     Route::get('/category/{id}/products', [ProductController::class, 'productsByCategory'])->name('category.products');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 });
 
 /*
@@ -37,8 +39,9 @@ Route::middleware('auth')->group(function () {
 
     // Cart routes
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');          // Add product to cart
-    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');        // View cart
+    Route::get('/cart', [CartController::class, 'show'])->name('cart.show');        // View cart
     Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
+    
 
     // User dashboard
     Route::get('/dashboard', function () {

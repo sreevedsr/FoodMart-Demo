@@ -284,403 +284,60 @@
               <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
 
                 <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                  @foreach($products as $product)
+                    <div class="col">
+                      <div class="product-item">
+                        @if($product->discount)
+                          <span class="badge bg-success position-absolute m-3">-{{ $product->discount }}%</span>
+                        @endif
 
-                  <div class="col">
-                    <div class="product-item">
-                      <span class="badge bg-success position-absolute m-3">-30%</span>
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-bananas.png')  }}" class="tab-image">
+                        <a href="#" class="btn-wishlist">
+                          <svg width="24" height="24">
+                            <use xlink:href="#heart"></use>
+                          </svg>
                         </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
+
+                        <figure>
+                          <a href="{{ route('products.show', $product->id) }}" title="{{ $product->name }}">
+                            <img src="{{ asset('storage/' . $product->image) }}" class="tab-image">
+                          </a>
+                        </figure>
+
+                        <h3>{{ $product->name }}</h3>
+                        <span class="qty">{{ $product->unit }}</span>
+                        <span class="rating">
+                          <svg width="24" height="24" class="text-primary">
+                            <use xlink:href="#star-solid"></use>
+                          </svg>
+                          {{ $product->rating }}
+                        </span>
+                        <span class="price">${{ $product->price }}</span>
+
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="input-group product-qty">
                             <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
                               <svg width="16" height="16">
                                 <use xlink:href="#minus"></use>
                               </svg>
                             </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
+                            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
                                 <use xlink:href="#plus"></use>
                               </svg>
                             </button>
-                          </span>
-                        </div>
-                        <a href="{{ route('cart.show', $product->id) }}" class="nav-link btn btn-primary">
-                          Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon>
-                        </a>
+                          </div>
 
+                          <a href="#" class="nav-link btn btn-primary px-4 py-2 add-to-cart"
+                            data-product="{{ $product->id }}">
+                            Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon>
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <span class="badge bg-success position-absolute m-3">-30%</span>
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-biscuits.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-cucumber.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-milk.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-bananas.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src=" {{ asset('assets/images/thumb-biscuits.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src="  {{ asset('assets/images/thumb-cucumber.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src="  {{ asset('assets/images/thumb-milk.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src="  {{ asset('assets/images/thumb-bananas.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="product-item">
-                      <a href="#" class="btn-wishlist"><svg width="24" height="24">
-                          <use xlink:href="#heart"></use>
-                        </svg></a>
-                      <figure>
-                        <a href="index.html" title="Product Title">
-                          <img src="  {{ asset('assets/images/thumb-biscuits.png')  }}" class="tab-image">
-                        </a>
-                      </figure>
-                      <h3>Sunstar Fresh Melon Juice</h3>
-                      <span class="qty">1 Unit</span><span class="rating"><svg width="24" height="24"
-                          class="text-primary">
-                          <use xlink:href="#star-solid"></use>
-                        </svg> 4.5</span>
-                      <span class="price">$18.00</span>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group product-qty">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#minus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
-                          <span class="input-group-btn">
-                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
-                              <svg width="16" height="16">
-                                <use xlink:href="#plus"></use>
-                              </svg>
-                            </button>
-                          </span>
-                        </div>
-                        <a href="#" class="nav-link">Add to Cart <iconify-icon icon="uil:shopping-cart"></a>
-                      </div>
-                    </div>
-                  </div>
-
+                  @endforeach
                 </div>
+
                 <!-- / product-grid -->
 
               </div>
