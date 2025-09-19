@@ -1,61 +1,137 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+FoodMart
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern ecommerce web application built with Laravel. FoodMart provides a platform for users to browse products, manage their cart, and complete purchases, while offering admins tools to manage categories, products, and users.
 
-## About Laravel
+Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+User Authentication – Secure login & signup system.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Product Management – Create, update, delete, and list products.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Category Management – Organize products into categories.
 
-## Learning Laravel
+Shopping Cart – Add, update, and remove products from the cart.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Checkout Flow – Basic checkout process for order simulation.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Admin Dashboard – Manage categories, products, and users.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Responsive UI – Clean and simple layout for desktop and mobile.
 
-## Laravel Sponsors
+Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Backend: Laravel 10 (PHP 8+)
 
-### Premium Partners
+Frontend: Blade templates, HTML5, CSS3, JavaScript
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Database: MySQL
 
-## Contributing
+Authentication: Laravel Breeze / Auth scaffolding
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Version Control: Git & GitHub
 
-## Code of Conduct
+Getting Started
+1. Clone the Repository
+git clone https://github.com/yourusername/FoodMart.git
+cd FoodMart
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Install Dependencies
+composer install
+npm install && npm run dev
 
-## Security Vulnerabilities
+3. Configure Environment
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Copy .env.example to .env and update database credentials:
 
-## License
+cp .env.example .env
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. Generate App Key
+php artisan key:generate
+
+5. Run Migrations & Seeders
+php artisan migrate --seed
+
+6. Start Development Server
+php artisan serve
+
+
+The application will be available at:
+http://127.0.0.1:8000
+
+User Roles
+
+Guest – Can browse products & categories.
+
+User – Can register, login, manage cart, and checkout.
+
+Admin – Can manage categories, products, and view dashboard.
+
+Screenshots
+Home Page
+
+Product Listing
+
+Shopping Cart
+
+Admin Dashboard
+
+(Add actual screenshots inside docs/screenshots/ folder in the project.)
+
+Project Structure
+FoodMart/
+│── app/                # Laravel application files
+│── bootstrap/          # Bootstrap files
+│── config/             # Configuration files
+│── database/           # Migrations and seeders
+│── public/             # Public assets
+│── resources/          # Blade templates, CSS, JS
+│── routes/             # Web & API routes
+│── storage/            # Storage (logs, cache, etc.)
+│── tests/              # PHPUnit tests
+│── .env.example        # Environment variables template
+│── composer.json       # Composer dependencies
+│── package.json        # NPM dependencies
+
+Development Notes
+
+Built as part of learning Laravel fundamentals.
+
+Implements authentication, CRUD operations, and MVC design pattern.
+
+Can be extended with additional ecommerce features.
+
+Future Enhancements
+
+Planned improvements and features to extend the project:
+
+Payment Integration – Add Stripe/PayPal for real transactions.
+
+Search & Filters – Product search with category and price filters.
+
+Wishlist – Allow users to save products for later.
+
+Order History – Track past purchases and invoices.
+
+Product Reviews & Ratings – Enable users to leave feedback.
+
+Inventory Management – Track product stock levels.
+
+Email Notifications – Send order confirmation and updates.
+
+REST API – Expose APIs for mobile or third-party integration.
+
+Contributing
+
+Contributions are welcome.
+
+Fork the repository
+
+Create a new branch (feature/your-feature)
+
+Commit changes
+
+Open a Pull Request
+
+License
+
+This project is licensed under the MIT License.
