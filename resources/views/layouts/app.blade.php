@@ -89,6 +89,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/normalize.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    @yield('styles')
+    @yield('scripts')
 </head>
 
 <body>
@@ -138,7 +140,46 @@
             }
         });
     });
-});</script>
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const productId = this.dataset.product;
+
+            fetch("{{ route('cart.add') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    // Not logged in → redirect to login
+                    window.location.href = "{{ route('login') }}";
+                    return;
+                }
+                if (!response.ok) throw new Error("Network response was not ok");
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return; // prevent running if redirected
+                document.getElementById("cart-count").textContent = data.cartCount;
+                document.getElementById("cart-total").textContent = data.cartTotal;
+            })
+            .catch(error => {
+                console.error("Error adding to cart:", error);
+                alert("Something went wrong while adding to cart.");
+            });
+        });
+    });
+});
+
+</script>
 </body>
 
 </html>

@@ -311,7 +311,7 @@
                           </svg>
                           {{ $product->rating }}
                         </span>
-                        <span class="price">${{ $product->price }}</span>
+                        <span class="price">&#8377;{{ $product->price }}</span>
 
                         <div class="d-flex align-items-center justify-content-between">
                           <div class="input-group product-qty">

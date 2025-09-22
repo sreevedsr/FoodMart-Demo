@@ -37,13 +37,13 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Cart routes
-    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');          // Add product to cart
-    Route::get('/cart', [CartController::class, 'show'])->name('cart.show');        // View cart
-    Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Remove item from cart
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+    
+    Route::post('/cart/update', [CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::get('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
     
 
-    // User dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');

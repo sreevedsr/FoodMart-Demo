@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
         <h3 class="mb-4">FoodMart</h3>
         <ul class="nav flex-column">
@@ -18,7 +17,6 @@
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
             </li>
 
-            <!-- Products with Submenu -->
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#productMenu" role="button"
                     aria-expanded="{{ request()->is('admin/products*') ? 'true' : 'false' }}">
@@ -62,7 +60,6 @@
         </ul>
     </div>
 
-    <!-- Content -->
     <div class="content">
         @yield('content')
     </div>

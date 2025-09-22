@@ -61,7 +61,7 @@
             </a>
           </li>
           <li class="d-lg-none">
-            <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas"
+            <a href="{{ Auth::check() ? route('cart.show') : route('login') }}" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
               <svg width="24" height="24" viewBox="0 0 24 24">
                 <use xlink:href="#cart"></use>
@@ -79,15 +79,16 @@
         </ul>
 
         <div class="cart text-end d-none d-lg-block dropdown">
-          <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+          <a href="{{ Auth::check() ? route('cart.show') : route('login') }}"
+            class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 text-decoration-none">
             <span class="fs-6 text-muted dropdown-toggle">Your Cart</span>
             <span class="cart-total fs-5 fw-bold">
-              $<span id="cart-total">0.00</span> <!-- Total price -->
+              &#8377;<span id="cart-total">{{ $cartTotal ?? '0.00' }}</span>
             </span>
-            <span class="cart-count badge bg-danger" id="cart-count">0</span> <!-- Total items -->
-          </button>
+            <span class="cart-count badge bg-danger" id="cart-count">{{ $cartCount ?? '0' }}</span>
+          </a>
         </div>
+
 
 
       </div>
