@@ -104,30 +104,6 @@
     });
   }
 
-  var initProductQty = function(){
-
-    $('.product-qty').each(function(){
-
-      var $el_product = $(this);
-      var quantity = 0;
-
-      $el_product.find('.quantity-right-plus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('#quantity').val());
-          $el_product.find('#quantity').val(quantity + 1);
-      });
-
-      $el_product.find('.quantity-left-minus').click(function(e){
-          e.preventDefault();
-          var quantity = parseInt($el_product.find('#quantity').val());
-          if(quantity>0){
-            $el_product.find('#quantity').val(quantity - 1);
-          }
-      });
-
-    });
-
-  }
 
   // init jarallax parallax
   var initJarallax = function() {
@@ -143,10 +119,76 @@
     
     initPreloader();
     initSwiper();
-    initProductQty();
     initJarallax();
     initChocolat();
 
   }); // End of a document
 
 })(jQuery);
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.querySelectorAll(".product-qty").forEach(qtyWrapper => {
+    const input = qtyWrapper.querySelector("input[type='text']");
+    const plusBtn = qtyWrapper.querySelector(".quantity-right-plus");
+    const minusBtn = qtyWrapper.querySelector(".quantity-left-minus");
+
+    plusBtn.addEventListener("click", e => {
+      e.preventDefault();
+      let value = parseInt(input.value) || 1;
+      input.value = value + 1;
+    });
+
+    minusBtn.addEventListener("click", e => {
+      e.preventDefault();
+      let value = parseInt(input.value) || 1;
+      if (value > 1) input.value = value - 1;
+    });
+  });
+
+  // 2️⃣ Handle Add to Cart buttons
+  document.querySelectorAll(".add-to-cart").forEach(button => {
+    button.addEventListener("click", async e => {
+      e.preventDefault();
+
+      const productId = button.dataset.product;
+      const quantityInput = document.getElementById(`quantity-${productId}`);
+      const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+
+      const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+      const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+      try {
+        const response = await fetch(addToCartUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
+          },
+          body: JSON.stringify({ product_id: productId, quantity: quantity })
+        });
+
+        if (response.status === 401) {
+          window.location.href = "/login"; // redirect if not logged in
+          return;
+        }
+
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+
+        // Update cart count & total dynamically
+        const cartCountEl = document.getElementById("cart-count");
+        const cartTotalEl = document.getElementById("cart-total");
+        if (cartCountEl) cartCountEl.textContent = data.cartCount;
+        if (cartTotalEl) cartTotalEl.textContent = data.cartTotal;
+
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Something went wrong while adding to cart.");
+      }
+    });
+  });
+});
+

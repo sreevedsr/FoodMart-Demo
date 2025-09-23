@@ -320,11 +320,11 @@
                                 <use xlink:href="#minus"></use>
                               </svg>
                             </button>
-                            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                            <input type="text" name="quantity" id="quantity-{{ $product->id }}" class="form-control input-number" value="1">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
                                 <use xlink:href="#plus"></use>
-                              </svg>
+                              </svg> 
                             </button>
                           </div>
 
@@ -372,7 +372,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" id="quantity-{{ $product->id }}" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
@@ -530,7 +530,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
@@ -569,7 +569,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
@@ -616,7 +616,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
@@ -655,7 +655,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">
@@ -694,7 +694,7 @@
                               </svg>
                             </button>
                           </span>
-                          <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1">
+                          <input type="text" name="quantity" class="form-control input-number" value="1">
                           <span class="input-group-btn">
                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
                               <svg width="16" height="16">

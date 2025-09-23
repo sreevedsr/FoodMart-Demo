@@ -83,9 +83,9 @@
             class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 text-decoration-none">
             <span class="fs-6 text-muted dropdown-toggle">Your Cart</span>
             <span class="cart-total fs-5 fw-bold">
-              &#8377;<span id="cart-total">{{ $cartTotal ?? '0.00' }}</span>
+              &#8377;<span id="cart-total">{{ $cartTotal ?? '0' }}</span>
             </span>
-            <span class="cart-count badge bg-danger" id="cart-count">{{ $cartCount ?? '0' }}</span>
+            <span class="cart-count badge bg-danger" id="cart-count" style="background-color: rgb(255 196 63) !important">{{ $cartCount ?? '0' }}</span>
           </a>
         </div>
 

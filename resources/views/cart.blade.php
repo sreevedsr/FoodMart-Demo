@@ -2,14 +2,14 @@
 
 @section('content')
     <div class="container mt-5">
-        <div class="card">
+        <div class="card" style="border: 0;">
             <div class="row">
                 <!-- Cart Items Section -->
                 <div class="col-md-8 cart">
                     <div class="title">
                         <div class="row">
                             <div class="col">
-                                <h4><b>Shopping Cart</b></h4>
+                                <h4><b style="margin: 20px">Shopping Cart</b></h4>
                             </div>
                             <div class="col align-self-center text-right text-muted">{{ $cartItems->count() }} items</div>
                         </div>
@@ -76,119 +76,26 @@
                         <select>
                             <option class="text-muted">Standard Delivery - ₹50</option>
                         </select>
-                        <p>GIVE CODE</p>
-                        <input id="code" placeholder="Enter your code">
+                        <p>COUPON CODE</p>
+                        <div id="coupon-cards" class="d-flex flex-wrap gap-2 mb-2">
+                            <!-- Coupon cards will be loaded here dynamically -->
+                        </div>
+                        <input id="code" placeholder="Enter your code manually" class="form-control mb-2">
+                        <button id="apply-code" class="btn btn-secondary btn-sm mb-3">Apply</button>
                     </form>
                     <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col">TOTAL PRICE</div>
                         <div class="col text-right">₹<span
-                                id="mini-cart-total">{{ $cartItems->sum(fn($i) => $i->product->price * $i->quantity + 50) }}</span>
+                                id="mini-cart-total">{{ $cartItems->sum(fn($i) => $i->product->price * $i->quantity) }}</span>
                         </div>
                     </div>
-                    <button class="btn btn-purple mt-3">CHECKOUT</button>
+                    <form action="{{ route('checkout') }}" method="GET">
+                        <button type="submit" class="btn btn-purple mt-3">CHECKOUT</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-@endsection
-@section('styles')
-    <style>
-        .cart .title {
-            margin-bottom: 20px;
-        }
-
-        .cart .main {
-            padding: 15px 0;
-        }
-
-        .cart .main .col-2 img {
-            max-width: 100%;
-            border-radius: 10px;
-        }
-
-        .cart .decrement,
-        .cart .increment {
-            cursor: pointer;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin: 0 5px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .cart .decrement:hover,
-        .cart .increment:hover {
-            background-color: #f0f0f0;
-        }
-
-        .cart .remove-item {
-            cursor: pointer;
-            color: red;
-            margin-left: 10px;
-            font-size: 18px;
-        }
-
-        .summary {
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-        }
-
-        .summary h5 {
-            margin-bottom: 15px;
-        }
-
-        .summary select,
-        .summary input {
-            width: 100%;
-            padding: 8px 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .summary .btn-purple {
-            width: 100%;
-            background-color: #6f42c1;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .summary .btn-purple:hover {
-            background-color: #5931a0;
-        }
-
-        .back-to-shop a {
-            text-decoration: none;
-            color: #555;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .back-to-shop a span {
-            margin-left: 5px;
-        }
-
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-            .cart .main {
-                flex-wrap: wrap;
-            }
-
-            .cart .col {
-                margin-top: 10px;
-            }
-
-            .summary {
-                margin-top: 20px;
-            }
-        }
-    </style>
 @endsection
 
 @section('scripts')
@@ -292,6 +199,76 @@
                 });
             });
         });
+        $(document).ready(function () {
+            const shipping = 50;
+            let appliedCoupon = null;
 
+            // Fetch coupons from backend
+            $.get('/coupons/active', function (coupons) {
+                coupons.forEach(c => {
+                    let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
+                    let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
+                                    <strong>${c.code}</strong><br><small>${text}</small>
+                                </div>`;
+                    $('#coupon-cards').append(card);
+                });
+            });
+
+            function updateTotal() {
+                let subtotal = parseFloat($('#mini-cart-subtotal').text());
+                let total = subtotal + shipping;
+
+                if (appliedCoupon) {
+                    let minTotal = parseFloat(appliedCoupon.min_total);
+                    if (total >= minTotal) {
+                        if (appliedCoupon.type === 'flat') {
+                            total -= parseFloat(appliedCoupon.amount);
+                        } else if (appliedCoupon.type === 'percent') {
+                            total -= (total * parseFloat(appliedCoupon.amount) / 100);
+                        }
+                    } else {
+                        alert(`Coupon requires a minimum total of ₹${minTotal}`);
+                        appliedCoupon = null;
+                        $('.coupon-card').removeClass('bg-success text-white');
+                    }
+                }
+
+                $('#mini-cart-total').text(total.toFixed(2));
+            }
+
+            // Click coupon card
+            $(document).on('click', '.coupon-card', function () {
+                $('.coupon-card').removeClass('bg-success text-white');
+                $(this).addClass('bg-success text-white');
+
+                appliedCoupon = {
+                    code: $(this).data('code'),
+                    type: $(this).data('type'),
+                    amount: $(this).data('amount'),
+                    min_total: $(this).data('min-total')
+                };
+
+                $('#code').val(''); // clear manual input
+                updateTotal();
+            });
+
+            // Manual code apply
+            $('#apply-code').click(function () {
+                let code = $('#code').val().trim().toUpperCase();
+                let card = $(`.coupon-card[data-code="${code}"]`);
+
+                if (card.length) {
+                    card.click(); // trigger card selection
+                } else {
+                    alert('Invalid coupon code');
+                }
+            });
+
+            // Update total on quantity change
+            // (Include this in your existing AJAX success after updating quantities)
+            function refreshTotalWithShipping() {
+                updateTotal();
+            }
+        });
     </script>
 @endsection
