@@ -133,6 +133,39 @@ class CartController extends Controller
         return response()->json($coupons);
     }
 
+    public function remove(Request $request)
+    {
+        // Get the existing cart for the logged-in user
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return response()->json(['error' => 'Cart not found'], 404);
+        }
+
+        // Get the CartItem ID from the request
+        $itemId = $request->input('cart_item_id');
+        $item = $cart->items()->find($itemId);
+
+        if (!$item) {
+            return response()->json(['error' => 'Item not found in cart'], 404);
+        }
+
+        // Delete the cart item
+        $item->delete();
+
+        // Refresh cart totals
+        $cartItems = $cart->items()->with('product')->get();
+        $cartTotal = $cartItems->sum(fn($i) => $i->quantity * $i->product->price);
+        $cartCount = $cartItems->sum('quantity');
+
+        return response()->json([
+            'success' => true,
+            'cartTotal' => $cartTotal,
+            'cartCount' => $cartCount
+        ]);
+    }
+
+
 }
 
 

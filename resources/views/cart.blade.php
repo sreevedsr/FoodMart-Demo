@@ -125,15 +125,24 @@
             $('.remove-item').click(function (e) {
                 e.preventDefault();
                 let row = $(this).closest('.main');
-                let id = row.data('id');
+                let id = row.data('id'); // this should be the CartItem id
 
                 $.post('{{ route("cart.remove") }}', {
                     _token: '{{ csrf_token() }}',
-                    cart_id: id
-                }, function () {
-                    row.remove();
+                    cart_item_id: id // <-- match the controller
+                }, function (res) {
+                    if (res.success) {
+                        row.remove();
+                        // optionally update cart totals
+                        $('#cart-total').text(res.cartTotal);
+                        $('#cart-count').text(res.cartCount);
+                    }
+                }).fail(function (xhr) {
+                    console.log(xhr.responseText);
+                    alert('Error removing item.');
                 });
             });
+
         });
         $(document).ready(function () {
             $('.add-to-cart').click(function (e) {
@@ -208,8 +217,8 @@
                 coupons.forEach(c => {
                     let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
                     let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
-                                    <strong>${c.code}</strong><br><small>${text}</small>
-                                </div>`;
+                                            <strong>${c.code}</strong><br><small>${text}</small>
+                                        </div>`;
                     $('#coupon-cards').append(card);
                 });
             });

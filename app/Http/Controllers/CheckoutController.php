@@ -48,8 +48,7 @@ class CheckoutController extends Controller
 
     // Edit an existing address
     public function editAddress(Address $address, Request $request)
-    {
-        $this->authorize('update', $address); // Make sure user owns the address
+    { // Make sure user owns the address
 
         $request->validate([
             'name' => 'required|string|max:255',

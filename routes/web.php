@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
 
     Route::post('/cart/update', [CartController::class, 'updateQuantity'])->name('cart.update');
-    Route::get('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/coupons/active', [CartController::class, 'activeCoupons']);
 
     Route::get('/dashboard', function () {
@@ -54,9 +55,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/address/add', [CheckoutController::class, 'addAddress'])->name('checkout.address.add');
     Route::post('/checkout/address/{address}/edit', [CheckoutController::class, 'editAddress'])->name('checkout.address.edit');
-    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+
+    Route::post('/checkout/place-order', [OrderController::class, 'placeOrder'])->name('checkout.placeOrder');
+    // Handle GET requests to the place-order route
+Route::get('/checkout/place-order', function() {
+    // Redirect the user back to the cart page
+    return redirect()->route('cart.show')->with('info', 'Please submit your order from the checkout page.');
+});
+
+    Route::post('/checkout/orderSuccess/{orderId}', [OrderController::class, 'orderSuccess'])->name('checkout.orderSuccess');
 
 
+    // Order success page
+    Route::get('/order/success/{orderId}', [OrderController::class, 'orderSuccess'])->name('orders.success');
+
+    // // Optional: Track order
+    // Route::get('/order/track/{orderId}', [OrderController::class, 'trackOrder'])->name('orders.track');
 
 });
 
