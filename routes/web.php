@@ -9,6 +9,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +27,23 @@ Route::middleware('guest')->group(function () {
     Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
     Route::post('/signup', [AuthController::class, 'signup']);
 
+    Route::get('/2fa', [AuthController::class, 'show2faForm'])->name('2fa.form');
+    Route::post('/2fa', [AuthController::class, 'verify2fa'])->name('2fa.verify');
+
+    Route::get('/email/verify', [AuthController::class, 'showEmailVerifyForm'])->name('email.verify');
+    Route::post('/email/verify', [AuthController::class, 'sendEmailVerificationOtp'])->name('email.verify.send');
+    Route::post('/email/verify/confirm', [AuthController::class, 'confirmEmailVerificationOtp'])->name('email.verify.confirm');
+
     Route::get('/category/{id}/products', [ProductController::class, 'productsByCategory'])->name('category.products');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+    Route::get('product/{id}', [ProductController::class, 'show'])->name('product.show');
+
+
 });
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,24 +65,34 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-
-
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/address/add', [CheckoutController::class, 'addAddress'])->name('checkout.address.add');
     Route::post('/checkout/address/{address}/edit', [CheckoutController::class, 'editAddress'])->name('checkout.address.edit');
 
     Route::post('/checkout/place-order', [OrderController::class, 'placeOrder'])->name('checkout.placeOrder');
     // Handle GET requests to the place-order route
-Route::get('/checkout/place-order', function() {
-    // Redirect the user back to the cart page
-    return redirect()->route('cart.show')->with('info', 'Please submit your order from the checkout page.');
-});
+    Route::get('/checkout/place-order', function () {
+        // Redirect the user back to the cart page
+        return redirect()->route('cart.show')->with('info', 'Please submit your order from the checkout page.');
+    });
 
     Route::post('/checkout/orderSuccess/{orderId}', [OrderController::class, 'orderSuccess'])->name('checkout.orderSuccess');
 
 
     // Order success page
     Route::get('/order/success/{orderId}', [OrderController::class, 'orderSuccess'])->name('orders.success');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::post('/profile/email/send-otp', [ProfileController::class, 'sendOtp'])->name('profile.send_otp');
+    Route::get('/profile/email/verify', [ProfileController::class, 'showOtpForm'])->name('otp.form');
+    Route::post('/profile/email/verify', [ProfileController::class, 'verifyOtp'])->name('otp.verify');
+
 
     // // Optional: Track order
     // Route::get('/order/track/{orderId}', [OrderController::class, 'trackOrder'])->name('orders.track');

@@ -77,10 +77,10 @@
                             <option class="text-muted">Standard Delivery - ₹50</option>
                         </select>
                         <p>COUPON CODE</p>
+                        <input id="code" placeholder="Enter your code manually" class="form-control mb-2">
                         <div id="coupon-cards" class="d-flex flex-wrap gap-2 mb-2">
                             <!-- Coupon cards will be loaded here dynamically -->
                         </div>
-                        <input id="code" placeholder="Enter your code manually" class="form-control mb-2">
                         <button id="apply-code" class="btn btn-secondary btn-sm mb-3">Apply</button>
                     </form>
                     <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">

@@ -178,7 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
 
-        // Update cart count & total dynamically
         const cartCountEl = document.getElementById("cart-count");
         const cartTotalEl = document.getElementById("cart-total");
         if (cartCountEl) cartCountEl.textContent = data.cartCount;
@@ -192,3 +191,63 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     document.querySelectorAll('.btn-wishlist').forEach(function (button) {
+//         button.addEventListener('click', function (e) {
+//             e.preventDefault();
+//             let form = this.closest('form');
+//             let btn = this;
+
+//             fetch(form.action, {
+//                 method: 'POST',
+//                 body: new FormData(form),
+//                 headers: {
+//                     'X-Requested-With': 'XMLHttpRequest'
+//                 }
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data.status === 'added') {
+//                     btn.classList.add('active');   // make heart red
+//                 } else if (data.status === 'removed') {
+//                     btn.classList.remove('active'); // back to gray
+//                 }
+//             })
+//             .catch(() => alert('Something went wrong!'));
+//         });
+//     });
+// });
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.btn-wishlist').forEach(function (button) {
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const productId = this.dataset.productId;
+
+      const form = this.closest('form');
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Select all wishlist buttons for this product
+        const buttons = document.querySelectorAll(`.btn-wishlist[data-product-id='${productId}']`);
+        
+        buttons.forEach(btn => {
+          if (data.status === 'added') {
+            btn.classList.add('active');   // make heart red
+          } else if (data.status === 'removed') {
+            btn.classList.remove('active'); // back to gray
+          }
+        });
+      })
+      .catch(() => alert('Something went wrong!'));
+    });
+  });
+});

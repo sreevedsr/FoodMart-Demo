@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendOtpMail;
 
 class AuthController extends Controller
 {
@@ -21,15 +23,28 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->route('home');
+        if (!Auth::validate($credentials)) {
+            return back()->withErrors(['email' => 'Invalid credentials.'])->withInput($request->only('email'));
         }
 
-        return back()
-            ->withErrors(['email' => 'Invalid credentials.'])
-            ->withInput($request->only('email'));
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user->is_email_verified) {
+            return back()->withErrors(['email' => 'Email not verified.']);
+        }
+
+        // Generate OTP
+        $otp = rand(100000, 999999);
+        session([
+            '2fa_user_id' => $user->id,
+            '2fa_otp' => $otp,
+            '2fa_expires_at' => now()->addMinutes(5)
+        ]);
+
+        // Send OTP via SMTP using Mailable
+        Mail::to($user->email)->send(new SendOtpMail($otp));
+
+        return redirect()->route('2fa.form')->with('success', 'OTP sent to your email.');
     }
 
     public function showSignup()
@@ -76,5 +91,35 @@ class AuthController extends Controller
     {
         return redirect()->route('dashboard')->with('swap_user_to_home', true);
     }
+
+    public function show2faForm()
+    {
+        return view('auth.2fa');
+    }
+
+    public function verify2fa(Request $request)
+    {
+        dd(session()->all());
+        $request->validate([
+            'otp' => 'required|digits:6',
+        ]);
+
+        $otp = session('2fa_otp');
+        $expiresAt = session('2fa_expires_at');
+
+        if (!$otp || now()->gt($expiresAt)) {
+            return back()->withErrors(['OTP expired.']);
+        }
+
+        if ($request->otp != $otp) {
+            return back()->withErrors(['Invalid OTP.']);
+        }
+
+        Auth::loginUsingId(session('2fa_user_id'));
+        session()->forget(['2fa_user_id', '2fa_otp', '2fa_expires_at']);
+
+        return redirect()->route('home');
+    }
+
 
 }

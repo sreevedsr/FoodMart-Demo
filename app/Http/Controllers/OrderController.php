@@ -9,10 +9,13 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
 
 class OrderController extends Controller
 {
     // Place Order (COD)
+
 public function placeOrder(Request $request)
 {
     $user = Auth::user();
@@ -22,8 +25,12 @@ public function placeOrder(Request $request)
         return redirect()->back()->with('error', 'Your cart is empty.');
     }
 
+    // Generate a custom order ID
+    $orderId = 'WJ' . strtoupper(Str::random(8));
+
     // Create the order
     $order = Order::create([
+        'id' => $orderId,  // set the string ID manually
         'user_id' => $user->id,
         'address_id' => $request->input('address_id'),
         'total_amount' => $cart->items->sum(fn($item) => $item->quantity * $item->product->price),
@@ -43,9 +50,9 @@ public function placeOrder(Request $request)
     // Clear cart
     $cart->items()->delete();
 
-    // Redirect to the success page with order ID
     return redirect()->route('orders.success', $order->id);
 }
+
 
 
 

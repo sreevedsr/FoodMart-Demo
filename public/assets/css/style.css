@@ -592,6 +592,18 @@ h1,h2,h3,h4,h5,h6 {
   background: rgb(240, 56, 56);
   color: #fff;
 }
+.product-item .btn-wishlist svg {
+  color: #333;
+  fill: none;
+  stroke: currentColor;
+  transition: all 0.3s ease;
+}
+
+.product-item .btn-wishlist.active svg {
+  color: rgb(240, 56, 56);
+  fill: currentColor;
+  stroke: currentColor;
+}
 .product-item .qty {
   font-weight: 400;
   font-size: 13px;
@@ -646,7 +658,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 /* cart */
-.cart .product-qty {
+.cart .product-qty { 
   min-width: 130px;
 }
 
