@@ -99,7 +99,6 @@ class AuthController extends Controller
 
     public function verify2fa(Request $request)
     {
-        dd(session()->all());
         $request->validate([
             'otp' => 'required|digits:6',
         ]);
