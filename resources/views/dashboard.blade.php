@@ -28,8 +28,9 @@
                             @if(!auth()->user()->is_email_verified)
                                 <form method="POST" action="{{ route('profile.send_otp') }}" class="d-inline ms-2">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-warning" id="verify-email-btn">Verify
-                                        Email</button>
+                                    <button type="submit" class="btn btn-sm btn-warning" id="verify-email-btn">
+                                        Verify Email
+                                    </button>
                                 </form>
                             @else
                                 <span class="badge bg-success ms-2" id="verified-badge">Verified</span>
@@ -37,7 +38,6 @@
                         </div>
                     </td>
                 </tr>
-
 
                 {{-- Password --}}
                 <tr>
@@ -57,47 +57,47 @@
 @endsection
 
 @section('scripts')
-    <script>
-        document.querySelectorAll('.editable').forEach(el => {
-            el.addEventListener('click', function () {
-                let currentValue = this.textContent.trim();
-                let field = this.dataset.field;
+<script>
+document.querySelectorAll('.editable').forEach(el => {
+    el.addEventListener('click', function () {
+        let currentValue = this.textContent.trim();
+        let field = this.dataset.field;
 
-                let input = document.createElement('input');
-                input.type = field === 'password' ? 'password' : 'text';
-                input.value = field === 'password' ? '' : currentValue;
-                input.classList.add('form-control', 'd-inline');
-                input.style.width = 'auto';
-                this.replaceWith(input);
-                input.focus();
+        let input = document.createElement('input');
+        input.type = field === 'password' ? 'password' : 'text';
+        input.value = field === 'password' ? '' : currentValue;
+        input.classList.add('form-control', 'd-inline');
+        input.style.width = 'auto';
+        this.replaceWith(input);
+        input.focus();
 
-                input.addEventListener('blur', function () {
-                    let newValue = this.value;
+        input.addEventListener('blur', function () {
+            let newValue = this.value;
 
-                    fetch("{{ route('profile.update') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ field: field, value: newValue })
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                input.replaceWith(el);
-                                el.textContent = field === 'password' ? '********' : newValue;
-                            } else {
-                                alert('Update failed!');
-                                input.replaceWith(el);
-                            }
-                        })
-                        .catch(err => {
-                            alert('Error updating field');
-                            input.replaceWith(el);
-                        });
-                });
+            fetch("{{ route('profile.update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ field: field, value: newValue })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    input.replaceWith(el);
+                    el.textContent = field === 'password' ? '********' : newValue;
+                } else {
+                    alert('Update failed!');
+                    input.replaceWith(el);
+                }
+            })
+            .catch(err => {
+                alert('Error updating field');
+                input.replaceWith(el);
             });
         });
-    </script>
+    });
+});
+</script>
 @endsection

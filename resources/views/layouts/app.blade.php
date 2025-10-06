@@ -84,22 +84,21 @@
   <link rel="stylesheet" href="{{ asset('assets/css/normalize.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/vendor.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-  @yield('scripts')
 </head>
 
 <body>
-
+  
   {{-- Header --}}
   @include('partials.header')
-
+  
   {{-- Page Content --}}
   <main>
     @yield('content')
   </main>
-
+  
   {{-- Footer --}}
   @include('partials.footer')
-
+  
   {{-- JS --}}
   <script src="{{ asset('assets/js/jquery-1.11.0.min.js') }}"></script>
   <script src="{{ asset('assets/js/modernizr.js') }}"></script>
@@ -110,7 +109,8 @@
     const addToCartUrl = "{{ route('cart.add') }}";
   </script>
   <script src="{{ asset('assets/js/script.js') }}"></script>
-
+  
+  @yield('scripts')
 </body>
 
 </html>
