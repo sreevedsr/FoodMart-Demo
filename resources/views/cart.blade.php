@@ -203,70 +203,70 @@
                 });
             });
         });
-            $(document).ready(function () {
-                const shipping = 50;
-                let appliedCoupon = null;
+        $(document).ready(function () {
+            const shipping = 50;
+            let appliedCoupon = null;
 
-                $.get('/coupons/active', function (coupons) {
-                    coupons.forEach(c => {
-                        let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
-                        let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
-                                                <strong>${c.code}</strong><br><small>${text}</small>
-                                            </div>`;
-                        $('#coupon-cards').append(card);
-                    });
+            $.get('/coupons/active', function (coupons) {
+                coupons.forEach(c => {
+                    let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
+                    let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
+                                                    <strong>${c.code}</strong><br><small>${text}</small>
+                                                </div>`;
+                    $('#coupon-cards').append(card);
                 });
+            });
 
-                function updateTotal() {
-                    let subtotal = parseFloat($('#mini-cart-subtotal').text());
-                    let total = subtotal + shipping;
+            function updateTotal() {
+                let subtotal = parseFloat($('#mini-cart-subtotal').text());
+                let total = subtotal + shipping;
 
-                    if (appliedCoupon) {
-                        let minTotal = parseFloat(appliedCoupon.min_total);
-                        if (total >= minTotal) {
-                            if (appliedCoupon.type === 'flat') {
-                                total -= parseFloat(appliedCoupon.amount);
-                            } else if (appliedCoupon.type === 'percent') {
-                                total -= (total * parseFloat(appliedCoupon.amount) / 100);
-                            }
-                        } else {
-                            alert(`Coupon requires a minimum total of ₹${minTotal}`);
-                            appliedCoupon = null;
-                            $('.coupon-card').removeClass('bg-success text-white');
+                if (appliedCoupon) {
+                    let minTotal = parseFloat(appliedCoupon.min_total);
+                    if (total >= minTotal) {
+                        if (appliedCoupon.type === 'flat') {
+                            total -= parseFloat(appliedCoupon.amount);
+                        } else if (appliedCoupon.type === 'percent') {
+                            total -= (total * parseFloat(appliedCoupon.amount) / 100);
                         }
+                    } else {
+                        alert(`Coupon requires a minimum total of ₹${minTotal}`);
+                        appliedCoupon = null;
+                        $('.coupon-card').removeClass('bg-success text-white');
                     }
-
-                    $('#mini-cart-total').text(total.toFixed(2));
                 }
 
-                $(document).on('click', '.coupon-card', function () {
-                    $('.coupon-card').removeClass('bg-success text-white');
-                    $(this).addClass('bg-success text-white');
+                $('#mini-cart-total').text(total.toFixed(2));
+            }
+            updateTotal();
+            $(document).on('click', '.coupon-card', function () {
+                $('.coupon-card').removeClass('bg-success text-white');
+                $(this).addClass('bg-success text-white');
 
-                    appliedCoupon = {
-                        code: $(this).data('code'),
-                        type: $(this).data('type'),
-                        amount: $(this).data('amount'),
-                        min_total: $(this).data('min-total')
-                    };
+                appliedCoupon = {
+                    code: $(this).data('code'),
+                    type: $(this).data('type'),
+                    amount: $(this).data('amount'),
+                    min_total: $(this).data('min-total')
+                };
 
-                    $('#code').val('');
-                    updateTotal();
-                });
+                $('#code').val('');
+                updateTotal();
+            });
 
-                $('#apply-code').click(function () {
-                    let code = $('#code').val().trim().toUpperCase();
-                    let card = $(`.coupon-card[data-code="${code}"]`);
+            $('#apply-code').click(function () {
+                let code = $('#code').val().trim().toUpperCase();
+                let card = $(`.coupon-card[data-code="${code}"]`);
 
-                    if (card.length) {
-                        card.click();
-                    } else {
-                        alert('Invalid coupon code');
-                    }
-                });
-                function refreshTotalWithShipping() {
-                    updateTotal();
+                if (card.length) {
+                    card.click();
+                } else {
+                    alert('Invalid coupon code');
                 }
             });
+            function refreshTotalWithShipping() {
+                updateTotal();
+            }
+        });
     </script>
 @endsection
