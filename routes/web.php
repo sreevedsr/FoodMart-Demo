@@ -11,6 +11,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,4 +125,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 
     // Category management
     Route::resource('categories', CategoryController::class);
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}/edit', [AdminOrderController::class, 'edit'])->name('orders.edit');
+    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
 });

@@ -13,16 +13,18 @@
     <div class="sidebar">
         <h3 class="mb-4">FoodMart</h3>
         <ul class="nav flex-column">
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
             </li>
 
+            <!-- Products -->
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#productMenu" role="button"
-                    aria-expanded="{{ request()->is('admin/products*') ? 'true' : 'false' }}">
+                    aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
                     Products ▾
                 </a>
-                <ul class="collapse submenu list-unstyled {{ request()->is('admin/products*') ? 'show' : '' }}"
+                <ul class="collapse submenu list-unstyled {{ request()->routeIs('products.*') ? 'show' : '' }}"
                     id="productMenu">
                     <li>
                         <a class="nav-link {{ request()->routeIs('products.index') ? 'active' : '' }}"
@@ -35,12 +37,13 @@
                 </ul>
             </li>
 
+            <!-- Categories -->
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#categoryMenu" role="button"
-                    aria-expanded="{{ request()->is('admin/categories*') ? 'true' : 'false' }}">
+                    aria-expanded="{{ request()->routeIs('categories.*') ? 'true' : 'false' }}">
                     Categories ▾
                 </a>
-                <ul class="collapse submenu list-unstyled {{ request()->is('admin/categories*') ? 'show' : '' }}"
+                <ul class="collapse submenu list-unstyled {{ request()->routeIs('categories.*') ? 'show' : '' }}"
                     id="categoryMenu">
                     <li>
                         <a class="nav-link {{ request()->routeIs('categories.index') ? 'active' : '' }}"
@@ -54,17 +57,27 @@
             </li>
 
 
+            <!-- Orders -->
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('orders.index') ? 'active' : '' }}"
+                    href="{{ route('orders.index') }}">Orders</a>
+            </li>
+
+            <!-- Logout -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.logout') }}">Logout</a>
             </li>
+
         </ul>
     </div>
+
 
     <div class="content">
         @yield('content')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
 
 </html>
