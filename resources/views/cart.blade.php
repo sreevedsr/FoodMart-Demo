@@ -103,7 +103,6 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Increment quantity
             $('.increment').click(function (e) {
                 e.preventDefault();
                 let row = $(this).closest('.main');
@@ -121,19 +120,17 @@
                 });
             });
 
-            // Remove item
             $('.remove-item').click(function (e) {
                 e.preventDefault();
                 let row = $(this).closest('.main');
-                let id = row.data('id'); // this should be the CartItem id
+                let id = row.data('id');
 
                 $.post('{{ route("cart.remove") }}', {
                     _token: '{{ csrf_token() }}',
-                    cart_item_id: id // <-- match the controller
+                    cart_item_id: id
                 }, function (res) {
                     if (res.success) {
                         row.remove();
-                        // optionally update cart totals
                         $('#cart-total').text(res.cartTotal);
                         $('#cart-count').text(res.cartCount);
                     }
@@ -172,7 +169,7 @@
                 e.preventDefault();
 
                 let $btn = $(this);
-                let action = $btn.data('type'); // plus or minus
+                let action = $btn.data('type');
                 let $parent = $btn.closest('.product-qty');
                 let quantitySpan = $parent.find('.quantity');
                 let itemId = $parent.data('id');
@@ -193,11 +190,9 @@
                             $parent.closest('.main').remove();
                         }
 
-                        // Update top cart dropdown
                         $('#cart-total').text(response.cartTotal);
                         $('#cart-count').text(response.cartCount);
 
-                        // Update mini cart summary
                         $('#mini-cart-items').text(response.cartCount);
                         $('#mini-cart-subtotal').text(response.cartTotal);
                         $('#mini-cart-total').text(response.totalWithShipping);
@@ -208,76 +203,70 @@
                 });
             });
         });
-        $(document).ready(function () {
-            const shipping = 50;
-            let appliedCoupon = null;
+            $(document).ready(function () {
+                const shipping = 50;
+                let appliedCoupon = null;
 
-            // Fetch coupons from backend
-            $.get('/coupons/active', function (coupons) {
-                coupons.forEach(c => {
-                    let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
-                    let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
-                                            <strong>${c.code}</strong><br><small>${text}</small>
-                                        </div>`;
-                    $('#coupon-cards').append(card);
+                $.get('/coupons/active', function (coupons) {
+                    coupons.forEach(c => {
+                        let text = c.type === 'flat' ? `₹${c.amount} off` : `${c.amount}% off`;
+                        let card = `<div class="coupon-card p-2 border" data-code="${c.code}" data-type="${c.type}" data-amount="${c.amount}" data-min-total="${c.min_total || 0}" style="cursor:pointer;">
+                                                <strong>${c.code}</strong><br><small>${text}</small>
+                                            </div>`;
+                        $('#coupon-cards').append(card);
+                    });
                 });
-            });
 
-            function updateTotal() {
-                let subtotal = parseFloat($('#mini-cart-subtotal').text());
-                let total = subtotal + shipping;
+                function updateTotal() {
+                    let subtotal = parseFloat($('#mini-cart-subtotal').text());
+                    let total = subtotal + shipping;
 
-                if (appliedCoupon) {
-                    let minTotal = parseFloat(appliedCoupon.min_total);
-                    if (total >= minTotal) {
-                        if (appliedCoupon.type === 'flat') {
-                            total -= parseFloat(appliedCoupon.amount);
-                        } else if (appliedCoupon.type === 'percent') {
-                            total -= (total * parseFloat(appliedCoupon.amount) / 100);
+                    if (appliedCoupon) {
+                        let minTotal = parseFloat(appliedCoupon.min_total);
+                        if (total >= minTotal) {
+                            if (appliedCoupon.type === 'flat') {
+                                total -= parseFloat(appliedCoupon.amount);
+                            } else if (appliedCoupon.type === 'percent') {
+                                total -= (total * parseFloat(appliedCoupon.amount) / 100);
+                            }
+                        } else {
+                            alert(`Coupon requires a minimum total of ₹${minTotal}`);
+                            appliedCoupon = null;
+                            $('.coupon-card').removeClass('bg-success text-white');
                         }
-                    } else {
-                        alert(`Coupon requires a minimum total of ₹${minTotal}`);
-                        appliedCoupon = null;
-                        $('.coupon-card').removeClass('bg-success text-white');
                     }
+
+                    $('#mini-cart-total').text(total.toFixed(2));
                 }
 
-                $('#mini-cart-total').text(total.toFixed(2));
-            }
+                $(document).on('click', '.coupon-card', function () {
+                    $('.coupon-card').removeClass('bg-success text-white');
+                    $(this).addClass('bg-success text-white');
 
-            // Click coupon card
-            $(document).on('click', '.coupon-card', function () {
-                $('.coupon-card').removeClass('bg-success text-white');
-                $(this).addClass('bg-success text-white');
+                    appliedCoupon = {
+                        code: $(this).data('code'),
+                        type: $(this).data('type'),
+                        amount: $(this).data('amount'),
+                        min_total: $(this).data('min-total')
+                    };
 
-                appliedCoupon = {
-                    code: $(this).data('code'),
-                    type: $(this).data('type'),
-                    amount: $(this).data('amount'),
-                    min_total: $(this).data('min-total')
-                };
+                    $('#code').val('');
+                    updateTotal();
+                });
 
-                $('#code').val(''); // clear manual input
-                updateTotal();
-            });
+                $('#apply-code').click(function () {
+                    let code = $('#code').val().trim().toUpperCase();
+                    let card = $(`.coupon-card[data-code="${code}"]`);
 
-            // Manual code apply
-            $('#apply-code').click(function () {
-                let code = $('#code').val().trim().toUpperCase();
-                let card = $(`.coupon-card[data-code="${code}"]`);
-
-                if (card.length) {
-                    card.click(); // trigger card selection
-                } else {
-                    alert('Invalid coupon code');
+                    if (card.length) {
+                        card.click();
+                    } else {
+                        alert('Invalid coupon code');
+                    }
+                });
+                function refreshTotalWithShipping() {
+                    updateTotal();
                 }
             });
-
-            // Update total on quantity change
-            // (Include this in your existing AJAX success after updating quantities)
-            function refreshTotalWithShipping() {
-                updateTotal();
-            }
-        });
     </script>
 @endsection

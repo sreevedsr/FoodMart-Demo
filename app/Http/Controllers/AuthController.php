@@ -6,16 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Cart;
+use App\Models\CartItem;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOtpMail;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    // Show login page (web only)
+    public function showLogin(Request $request)
     {
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Use /api/login for API requests'], 400);
+        }
         return view('auth.login');
     }
 
+    // Login (web or API)
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -24,13 +31,17 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::validate($credentials)) {
-            return back()->withErrors(['email' => 'Invalid credentials.'])->withInput($request->only('email'));
+            $message = 'Invalid credentials.';
+            if ($request->wantsJson()) return response()->json(['message' => $message], 401);
+            return back()->withErrors(['email' => $message])->withInput($request->only('email'));
         }
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user->is_email_verified) {
-            return back()->withErrors(['email' => 'Email not verified.']);
+            $message = 'Email not verified.';
+            if ($request->wantsJson()) return response()->json(['message' => $message], 403);
+            return back()->withErrors(['email' => $message]);
         }
 
         // Generate OTP
@@ -41,17 +52,27 @@ class AuthController extends Controller
             '2fa_expires_at' => now()->addMinutes(5)
         ]);
 
-        // Send OTP via SMTP using Mailable
         Mail::to($user->email)->send(new SendOtpMail($otp));
 
-        return redirect()->route('2fa.form')->with('success', 'OTP sent to your email.');
+        $message = 'OTP sent to your email.';
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => $message]);
+        }
+
+        return redirect()->route('2fa.form')->with('success', $message);
     }
 
-    public function showSignup()
+    // Show signup page (web only)
+    public function showSignup(Request $request)
     {
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Use /api/signup for API requests'], 400);
+        }
         return view('auth.signup');
     }
 
+    // Signup (web or API)
     public function signup(Request $request)
     {
         $request->validate([
@@ -73,30 +94,29 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        if ($request->wantsJson()) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'message' => 'Signup successful',
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+            ], 201);
+        }
+
         Auth::login($user);
-
         return redirect()->route('home');
     }
 
-    public function logout(Request $request)
+    // Show 2FA form (web only)
+    public function show2faForm(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('home');
-    }
-
-    public function dashboard()
-    {
-        return redirect()->route('dashboard')->with('swap_user_to_home', true);
-    }
-
-    public function show2faForm()
-    {
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Use /api/2fa-verify for API requests'], 400);
+        }
         return view('auth.2fa');
     }
 
+    // Verify OTP (web or API)
     public function verify2fa(Request $request)
     {
         $request->validate([
@@ -107,18 +127,74 @@ class AuthController extends Controller
         $expiresAt = session('2fa_expires_at');
 
         if (!$otp || now()->gt($expiresAt)) {
-            return back()->withErrors(['OTP expired.']);
+            $message = 'OTP expired.';
+            if ($request->wantsJson()) return response()->json(['message' => $message], 400);
+            return back()->withErrors([$message]);
         }
 
         if ($request->otp != $otp) {
-            return back()->withErrors(['Invalid OTP.']);
+            $message = 'Invalid OTP.';
+            if ($request->wantsJson()) return response()->json(['message' => $message], 400);
+            return back()->withErrors([$message]);
         }
 
-        Auth::loginUsingId(session('2fa_user_id'));
-        session()->forget(['2fa_user_id', '2fa_otp', '2fa_expires_at']);
+        $user = User::find(session('2fa_user_id'));
 
+        if ($request->wantsJson()) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            session()->forget(['2fa_user_id', '2fa_otp', '2fa_expires_at']);
+            return response()->json([
+                'message' => 'Login successful',
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+            ]);
+        }
+
+        Auth::loginUsingId($user->id);
+        session()->forget(['2fa_user_id', '2fa_otp', '2fa_expires_at']);
         return redirect()->route('home');
     }
 
+    // Logout (web or API)
+    public function logout(Request $request)
+    {
+        if ($request->wantsJson()) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(['message' => 'Logged out successfully']);
+        }
 
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('home');
+    }
+
+    // Merge session cart with user cart
+    protected function mergeCart($user)
+    {
+        $sessionItems = session('cart.items', []);
+
+        if (!empty($sessionItems)) {
+            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+            foreach ($sessionItems as $item) {
+                $cartItem = CartItem::where('cart_id', $cart->id)
+                    ->where('product_id', $item['product_id'])
+                    ->first();
+
+                if ($cartItem) {
+                    $cartItem->quantity += $item['quantity'];
+                    $cartItem->save();
+                } else {
+                    CartItem::create([
+                        'cart_id' => $cart->id,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+            }
+
+            session()->forget('cart.items');
+        }
+    }
 }

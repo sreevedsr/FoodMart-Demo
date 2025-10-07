@@ -13,7 +13,6 @@ use App\Models\Coupon;
 
 class CartController extends Controller
 {
-    // Add product to cart
     public function add(Request $request)
     {
         $product = Product::find($request->product_id);
@@ -22,38 +21,57 @@ class CartController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        // Get or create cart for logged-in user
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-
-        // Check if item already exists
-        $cartItem = CartItem::where('cart_id', $cart->id)
-            ->where('product_id', $product->id)
-            ->first();
-
         $requestedQuantity = (int) $request->input('quantity', 1);
 
-        if ($cartItem) {
-            $cartItem->quantity += $requestedQuantity;
-            $cartItem->save();
+        if (Auth::check()) {
+            $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $requestedQuantity;
+                $cartItem->save();
+            } else {
+                $cartItem = CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'quantity' => $requestedQuantity
+                ]);
+            }
+
+            $cart->load('items.product');
+            $cartCount = $cart->items->sum('quantity');
+            $cartTotal = $cart->items->sum(fn($item) => $item->quantity * $item->product->price);
+
         } else {
-            $cartItem = CartItem::create([
-                'cart_id' => $cart->id,
-                'product_id' => $product->id,
-                'quantity' => $requestedQuantity
-            ]);
+            $cart = session()->get('cart.items', []);
+
+            $existingItemKey = collect($cart)->search(fn($item) => $item['product_id'] == $product->id);
+
+            if ($existingItemKey !== false) {
+                $cart[$existingItemKey]['quantity'] += $requestedQuantity;
+            } else {
+                $cart[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $requestedQuantity
+                ];
+            }
+
+            session(['cart.items' => $cart]);
+            $cartCount = collect($cart)->sum('quantity');
+            $cartTotal = collect($cart)->sum(function ($item) {
+                $product = Product::find($item['product_id']);
+                return $product ? $product->price * $item['quantity'] : 0;
+            });
         }
-
-
-        // Calculate updated cart totals
-        $cart->load('items.product');
-        $cartCount = $cart->items->sum('quantity');
-        $cartTotal = $cart->items->sum(fn($item) => $item->quantity * $item->product->price);
 
         return response()->json([
             'product' => [
                 'name' => $product->name,
                 'price' => $product->price,
-                'quantity' => $cartItem->quantity
+                'quantity' => $requestedQuantity
             ],
             'cartCount' => $cartCount,
             'cartTotal' => number_format($cartTotal, 2)
@@ -61,7 +79,7 @@ class CartController extends Controller
     }
 
 
-    // Show cart items
+
     public function show()
     {
         $cart = Cart::with('items.product')->where('user_id', Auth::id())->first();
@@ -85,12 +103,10 @@ class CartController extends Controller
                     $cartItem->quantity--;
                     $cartItem->save();
                 } else {
-                    // Quantity = 1 and user clicked minus → delete the item
                     $cartItem->delete();
                 }
             }
 
-            // Recalculate cart details after update or delete
             $cartItems = CartItem::with('product')
                 ->whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))
                 ->get();
@@ -135,14 +151,12 @@ class CartController extends Controller
 
     public function remove(Request $request)
     {
-        // Get the existing cart for the logged-in user
         $cart = Cart::where('user_id', Auth::id())->first();
 
         if (!$cart) {
             return response()->json(['error' => 'Cart not found'], 404);
         }
 
-        // Get the CartItem ID from the request
         $itemId = $request->input('cart_item_id');
         $item = $cart->items()->find($itemId);
 
@@ -150,10 +164,8 @@ class CartController extends Controller
             return response()->json(['error' => 'Item not found in cart'], 404);
         }
 
-        // Delete the cart item
         $item->delete();
 
-        // Refresh cart totals
         $cartItems = $cart->items()->with('product')->get();
         $cartTotal = $cartItems->sum(fn($i) => $i->quantity * $i->product->price);
         $cartCount = $cartItems->sum('quantity');

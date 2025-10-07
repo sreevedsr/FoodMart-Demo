@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
       const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
 
-      try {
+      
         const response = await fetch(addToCartUrl, {
           method: "POST",
           headers: {
@@ -169,10 +169,10 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ product_id: productId, quantity: quantity })
         });
 
-        if (response.status === 401) {
-          window.location.href = "/login"; // redirect if not logged in
-          return;
-        }
+         if (response.status === 401 || response.url.endsWith('/login')) {
+        window.location.href = "/login"; // redirect if not logged in or redirected to login
+        return; // Stop processing here
+      }
 
         if (!response.ok) throw new Error("Network response was not ok");
 
@@ -183,10 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cartCountEl) cartCountEl.textContent = data.cartCount;
         if (cartTotalEl) cartTotalEl.textContent = data.cartTotal;
 
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-        alert("Something went wrong while adding to cart.");
-      }
+      
     });
   });
 });

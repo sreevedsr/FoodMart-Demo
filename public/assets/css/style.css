@@ -587,22 +587,34 @@ h1,h2,h3,h4,h5,h6 {
   background: #fff;
   border: 1px solid #d8d8d8;
   transition: all 0.3s ease-out;
+  fill: none;
+  stroke: currentColor;;
 }
 .product-item .btn-wishlist:hover {
   background: rgb(240, 56, 56);
+  fill: currentColor;
   color: #fff;
+  stroke: white;
 }
-.product-item .btn-wishlist svg {
+/* .product-item .btn-wishlist svg {
   color: #333;
   fill: none;
   stroke: currentColor;
   transition: all 0.3s ease;
-}
+} */
+/* .product-item .btn-wishlist svg:hover{
+  color: white;
+} */
 
-.product-item .btn-wishlist.active svg {
+.product-item .btn-wishlist.active {
   color: rgb(240, 56, 56);
-  fill: currentColor;
+  fill: currentColor !important;
   stroke: currentColor;
+}
+.product-item .btn-wishlist.active:hover {
+  color: white;
+  fill: white !important;
+  stroke: white;
 }
 .product-item .qty {
   font-weight: 400;
